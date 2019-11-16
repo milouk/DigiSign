@@ -1,3 +1,5 @@
+package com.milouk.digisign;
+
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureInterface;
@@ -37,6 +39,7 @@ public class CreateSignature implements SignatureInterface {
 		try (FileInputStream fis1 = new FileInputStream(pdfFile);
 				FileOutputStream fos = new FileOutputStream(signedPdfFile);
 				FileInputStream fis = new FileInputStream(signedPdfFile);
+				FileOutputStream fos2 = new FileOutputStream(signedPdfFile);
 				PDDocument doc = PDDocument.load(pdfFile)) {
 			int readCount;
 			byte[] buffer = new byte[8 * 1024];
@@ -50,10 +53,10 @@ public class CreateSignature implements SignatureInterface {
 			signature.setName("NAME");
 			signature.setLocation("LOCATION");
 			signature.setReason("REASON");
-			signature.setContactInfo("Contact Info");
+			signature.setContactInfo("CONTACT INFO");
 			signature.setSignDate(Calendar.getInstance());
 			doc.addSignature(signature, this);
-			doc.saveIncremental(fos);
+			doc.saveIncremental(fos2);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
