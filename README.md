@@ -1,4 +1,4 @@
-# Use DigiSign to digitally sign your files.
+# Use DigiSign to digitally sign your PDF files.
 
 # Requirements
 * pdfbox-2.0.17.jar
