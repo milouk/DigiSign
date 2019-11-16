@@ -1,3 +1,5 @@
+package com.milouk.digisign;
+
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureInterface;
@@ -50,10 +52,10 @@ public class CreateSignature implements SignatureInterface {
 			signature.setName("NAME");
 			signature.setLocation("LOCATION");
 			signature.setReason("REASON");
-			signature.setContactInfo("Contact Info");
+			signature.setContactInfo("CONTACT INFO");
 			signature.setSignDate(Calendar.getInstance());
 			doc.addSignature(signature, this);
-			doc.saveIncremental(fos);
+			doc.saveIncremental(fis, fos);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
