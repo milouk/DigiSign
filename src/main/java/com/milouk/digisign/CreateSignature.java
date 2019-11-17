@@ -1,5 +1,12 @@
 package com.milouk.digisign;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureInterface;
@@ -91,10 +98,50 @@ public class CreateSignature implements SignatureInterface {
 	}
 
 	public static void main(String[] args) throws IOException, GeneralSecurityException {
-		char[] password = "1234".toCharArray();
+
+		String key = "";
+		String pass = "";
+		String input = "";
+		String output = "";
+		Options options = new Options();
+		options.addRequiredOption("k", "key", true, "PKCS12 KeyStore");
+		options.addRequiredOption("p", "password", true, "KeyStore Password");
+		options.addRequiredOption("i", "input", true, "Input Pdf File");
+		options.addRequiredOption("o", "output", true, "Signed Pdf File");
+		options.addOption(Option.builder("h").longOpt("help").build());
+		String header = "\nDigitally Sign your PDF Documents\n\n";
+		String footer = "\nPlease report issues at http://github.com/milouk/DigiSign/issues";
+		HelpFormatter formatter = new HelpFormatter();
+
+		CommandLineParser parser = new DefaultParser();
+		try {
+			CommandLine cmd = parser.parse(options, args);
+			if (cmd.hasOption("h") || cmd.getArgs().length == 0) {
+				formatter.printHelp("Digi Sign", header, options, footer, true);
+				System.exit(0);
+			}
+			if (cmd.hasOption("k")) {
+				key = cmd.getOptionValue("k");
+			}
+			if (cmd.hasOption("p")) {
+				pass = cmd.getOptionValue("p");
+			}
+			if (cmd.hasOption("i")) {
+				input = cmd.getOptionValue("input");
+			}
+			if (cmd.hasOption("o")) {
+				output = cmd.getOptionValue("o");
+			}
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			formatter.printHelp("Digi Sign", header, options, footer, true);
+			System.exit(0);
+		}
+
+		char[] password = pass.toCharArray();
 
 		KeyStore keystore = KeyStore.getInstance("PKCS12");
-		keystore.load(new FileInputStream("keyStore.p12"), password);
+		keystore.load(new FileInputStream(key), password);
 
 		Enumeration<String> aliases = keystore.aliases();
 		String alias;
@@ -107,8 +154,8 @@ public class CreateSignature implements SignatureInterface {
 		Certificate[] certificateChain = keystore.getCertificateChain(alias);
 		certificate = certificateChain[0];
 
-		File inFile = new File("unsigned.pdf");
-		File outFile = new File("signed.pdf");
+		File inFile = new File(input);
+		File outFile = new File(output);
 		new CreateSignature().signPdf(inFile, outFile);
 	}
 }
