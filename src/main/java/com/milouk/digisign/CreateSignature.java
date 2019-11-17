@@ -40,6 +40,10 @@ import java.util.Enumeration;
 public class CreateSignature implements SignatureInterface {
 	private static PrivateKey privateKey;
 	private static Certificate certificate;
+	private static String name = "";
+	private static String location = "";
+	private static String reason = "";
+	private static String contactInfo = "";
 
 	boolean signPdf(File pdfFile, File signedPdfFile) {
 
@@ -57,10 +61,10 @@ public class CreateSignature implements SignatureInterface {
 			PDSignature signature = new PDSignature();
 			signature.setFilter(PDSignature.FILTER_ADOBE_PPKLITE);
 			signature.setSubFilter(PDSignature.SUBFILTER_ADBE_PKCS7_DETACHED);
-			signature.setName("NAME");
-			signature.setLocation("LOCATION");
-			signature.setReason("REASON");
-			signature.setContactInfo("CONTACT INFO");
+			signature.setName(name);
+			signature.setLocation(location);
+			signature.setReason(reason);
+			signature.setContactInfo(contactInfo);
 			signature.setSignDate(Calendar.getInstance());
 			doc.addSignature(signature, this);
 			doc.saveIncremental(fos2);
@@ -104,11 +108,15 @@ public class CreateSignature implements SignatureInterface {
 		String input = "";
 		String output = "";
 		Options options = new Options();
-		options.addRequiredOption("k", "key", true, "PKCS12 KeyStore");
+		options.addRequiredOption("k", "key", true, "PKCS12 Key");
 		options.addRequiredOption("p", "password", true, "KeyStore Password");
 		options.addRequiredOption("i", "input", true, "Input Pdf File");
 		options.addRequiredOption("o", "output", true, "Signed Pdf File");
-		options.addOption(Option.builder("h").longOpt("help").build());
+		options.addRequiredOption("n", "name", true, "Signature Name");
+		options.addRequiredOption("l", "location", true, "Signature Location");
+		options.addRequiredOption("r", "reason", true, "Signature Reason");
+		options.addRequiredOption("c", "contact info", true, "Signature Contact Info");
+		options.addOption(Option.builder("h").longOpt("help").desc("Usage Help").build());
 		String header = "\nDigitally Sign your PDF Documents\n\n";
 		String footer = "\nPlease report issues at http://github.com/milouk/DigiSign/issues";
 		HelpFormatter formatter = new HelpFormatter();
@@ -131,6 +139,18 @@ public class CreateSignature implements SignatureInterface {
 			}
 			if (cmd.hasOption("o")) {
 				output = cmd.getOptionValue("o");
+			}
+			if (cmd.hasOption("n")) {
+				name = cmd.getOptionValue("n");
+			}
+			if (cmd.hasOption("l")) {
+				location = cmd.getOptionValue("l");
+			}
+			if (cmd.hasOption("r")) {
+				reason = cmd.getOptionValue("r");
+			}
+			if (cmd.hasOption("c")) {
+				contactInfo = cmd.getOptionValue("c");
 			}
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
