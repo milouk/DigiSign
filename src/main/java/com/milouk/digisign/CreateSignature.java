@@ -124,7 +124,7 @@ public class CreateSignature implements SignatureInterface {
 		CommandLineParser parser = new DefaultParser();
 		try {
 			CommandLine cmd = parser.parse(options, args);
-			if (cmd.hasOption("h") || cmd.getArgs().length == 0) {
+			if (cmd.hasOption("h") || cmd.getOptions().length == 0) {
 				formatter.printHelp("Digi Sign", header, options, footer, true);
 				System.exit(0);
 			}
